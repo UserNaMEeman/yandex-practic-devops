@@ -90,14 +90,14 @@ func main() {
 			time.Sleep(reportInterval)
 			for key, value := range sendMetrics {
 				aVal := fmt.Sprint(value)
-				url := "http://127.0.0.1:8080/update/gauge/" + key + "/" + aVal
+				url := "http://localhost:8080/update/gauge/" + key + "/" + aVal
 				POST(url, client)
 			}
 			aPoll := fmt.Sprint(PollCount)
-			url := "http://127.0.0.1:8080/update/counter/PollCount/" + aPoll
+			url := "http://localhost:8080/update/counter/PollCount/" + aPoll
 			POST(url, client)
 			aRand := fmt.Sprint(RandomValue)
-			url = "http://127.0.0.1:8080/update/gauge/RandomValue/" + aRand
+			url = "http://localhost:8080/update/gauge/RandomValue/" + aRand
 			POST(url, client)
 		}
 	}()
