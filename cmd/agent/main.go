@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/agent/metric"
-	// "github.com/UserNaMEeman/yandex-practic-devops/metric"
 )
 
 func collectMetrics(met *metric.Metrics) {
@@ -12,6 +11,7 @@ func collectMetrics(met *metric.Metrics) {
 func main() {
 	met := metric.NewMetrics()
 	collectMetrics(met)
+	met.MetricPOST("http://localhost:8080/update/")
 }
 
 // type gauge float64
