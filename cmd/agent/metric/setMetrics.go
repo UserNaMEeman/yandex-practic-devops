@@ -10,7 +10,6 @@ import (
 )
 
 func (sm *Metrics) SetGuage() {
-	// var needMetrics []string
 	rtm := &runtime.MemStats{}
 	runtime.ReadMemStats(rtm)
 	RandomValue := Metric{
@@ -18,7 +17,7 @@ func (sm *Metrics) SetGuage() {
 		Type:   "guage",
 		ValueF: rand.Float64(),
 	}
-	sm.AddMetrics(RandomValue)
+	sm.addMetrics(RandomValue)
 	val := reflect.ValueOf(rtm).Elem()
 	for i := 0; i < val.NumField(); i++ {
 		a := fmt.Sprint(val.FieldByName(val.Type().Field(i).Name))
@@ -28,7 +27,17 @@ func (sm *Metrics) SetGuage() {
 			Type:   "guage",
 			ValueF: value,
 		}
-		sm.AddMetrics(m)
+		sm.addMetrics(m)
+	}
+	if sm.M["PollCount"].Name == ""{
+		countM := Metric{
+			Name: "PollCount",
+			Type: "counter",
+			ValueC: 0,
+		}
+		sm.addMetrics(countM)
+	} else{
+		sm.countCount()
 	}
 }
 

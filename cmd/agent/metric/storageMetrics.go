@@ -1,8 +1,8 @@
 package metric
 
-import (
-	"errors"
-)
+// import (
+// 	"errors"
+// )
 
 type Metric struct {
 	Name   string
@@ -21,26 +21,19 @@ func NewMetrics() *Metrics {
 	}
 }
 
-func (m *Metrics) AddMetrics(am Metric) error {
-	if m.M[am.Name].Name != "" {
-		return errors.New("metric " + am.Name + " already exist")
+func (m *Metrics) countCount(){
+	valueCount := m.M["PollCount"].ValueC
+	sVal := Metric{
+		Name: "PollCount",
+		Type: "counter",
+		ValueC: valueCount + 1,
 	}
-	m.M[am.Name] = am
-	return nil
+	m.M["PollCount"] = sVal
 }
 
-// type CounterM struct {
-// 	M map[string]CounterMetric
-// }
-
-// func NewCounterM() *CounterM{
-// 	return &CounterM{
-// 		M: map[string]CounterMetric{}
-// 	}
-// }
-
-// type CounterMetric struct {
-// 	Name  string
-// 	Type  string	`counter`
-// 	Value int64
-// }
+func (m *Metrics) addMetrics(am Metric) {
+	// if m.M[am.Name].Name != "" {
+	// 	return errors.New("metric " + am.Name + " already exist")
+	// }
+	m.M[am.Name] = am
+}
