@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func (sm *Metrics) SetGuage() {
+func (statmetric *Metrics) SetGuage() {
 	rtm := &runtime.MemStats{}
 	runtime.ReadMemStats(rtm)
 	RandomValue := Metric{
@@ -17,7 +17,7 @@ func (sm *Metrics) SetGuage() {
 		Type:   "guage",
 		ValueF: rand.Float64(),
 	}
-	sm.addMetrics(RandomValue)
+	statmetric.addMetrics(RandomValue)
 	val := reflect.ValueOf(rtm).Elem()
 	for i := 0; i < val.NumField(); i++ {
 		a := fmt.Sprint(val.FieldByName(val.Type().Field(i).Name))
@@ -27,33 +27,33 @@ func (sm *Metrics) SetGuage() {
 			Type:   "guage",
 			ValueF: value,
 		}
-		sm.addMetrics(m)
+		statmetric.addMetrics(m)
 	}
-	if sm.M["PollCount"].Name == ""{
+	if statmetric.M["PollCount"].Name == "" {
 		countM := Metric{
-			Name: "PollCount",
-			Type: "counter",
+			Name:   "PollCount",
+			Type:   "counter",
 			ValueC: 0,
 		}
-		sm.addMetrics(countM)
-	} else{
-		sm.countCount()
+		statmetric.addMetrics(countM)
+	} else {
+		statmetric.countCount()
 	}
 }
 
 func (sm *Metrics) MetricPOST(url string) error {
 	// "http://localhost:8080/update/gauge/" + key + "/" + aVal
-	var postUrl string
+	var postURL string
 	client := http.Client{}
 	for _, i := range sm.M {
 		if i.Type == "guage" {
 			aVal := fmt.Sprint(i.ValueF)
-			postUrl = url + i.Type + "/" + i.Name + "/" + aVal
+			postURL = url + i.Type + "/" + i.Name + "/" + aVal
 		} else {
 			aVal := fmt.Sprint(i.ValueC)
-			postUrl = url + i.Type + "/" + i.Name + "/" + aVal
+			postURL = url + i.Type + "/" + i.Name + "/" + aVal
 		}
-		request, err := http.NewRequest(http.MethodPost, postUrl, nil)
+		request, err := http.NewRequest(http.MethodPost, postURL, nil)
 		if err != nil {
 			fmt.Println(err)
 		}
