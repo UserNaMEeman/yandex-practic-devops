@@ -58,11 +58,12 @@ func (sm *Metrics) MetricPOST(url string) error {
 			fmt.Println(err)
 		}
 		request.Header.Set("Content-Type", "text/plain")
-		_, err = client.Do(request)
+		response, err := client.Do(request)
 		if err != nil {
 			// fmt.Println(err)
 			return err
 		}
+		defer response.Body.Close()
 	}
 	return nil
 }
