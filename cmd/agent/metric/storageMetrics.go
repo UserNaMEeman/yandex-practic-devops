@@ -21,19 +21,19 @@ func NewMetrics() *Metrics {
 	}
 }
 
-func (m *Metrics) countCount(){
-	valueCount := m.M["PollCount"].ValueC
+func (sm *Metrics) countCount() {
+	valueCount := sm.M["PollCount"].ValueC
 	sVal := Metric{
-		Name: "PollCount",
-		Type: "counter",
+		Name:   "PollCount",
+		Type:   "counter",
 		ValueC: valueCount + 1,
 	}
-	m.M["PollCount"] = sVal
+	sm.M["PollCount"] = sVal
 }
 
-func (m *Metrics) addMetrics(am Metric) {
+func (sm *Metrics) addMetrics(am Metric) {
 	// if m.M[am.Name].Name != "" {
 	// 	return errors.New("metric " + am.Name + " already exist")
 	// }
-	m.M[am.Name] = am
+	sm.M[am.Name] = am
 }

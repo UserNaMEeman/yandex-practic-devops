@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func (statmetric *Metrics) SetGuage() {
+func (sm *Metrics) SetMetrics() {
 	rtm := &runtime.MemStats{}
 	runtime.ReadMemStats(rtm)
 	RandomValue := Metric{
@@ -17,7 +17,7 @@ func (statmetric *Metrics) SetGuage() {
 		Type:   "guage",
 		ValueF: rand.Float64(),
 	}
-	statmetric.addMetrics(RandomValue)
+	sm.addMetrics(RandomValue)
 	val := reflect.ValueOf(rtm).Elem()
 	for i := 0; i < val.NumField(); i++ {
 		a := fmt.Sprint(val.FieldByName(val.Type().Field(i).Name))
@@ -27,17 +27,17 @@ func (statmetric *Metrics) SetGuage() {
 			Type:   "guage",
 			ValueF: value,
 		}
-		statmetric.addMetrics(m)
+		sm.addMetrics(m)
 	}
-	if statmetric.M["PollCount"].Name == "" {
+	if sm.M["PollCount"].Name == "" {
 		countM := Metric{
 			Name:   "PollCount",
 			Type:   "counter",
 			ValueC: 0,
 		}
-		statmetric.addMetrics(countM)
+		sm.addMetrics(countM)
 	} else {
-		statmetric.countCount()
+		sm.countCount()
 	}
 }
 

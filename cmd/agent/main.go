@@ -1,23 +1,24 @@
 package main
 
 import (
-	"github.com/UserNaMEeman/yandex-practic-devops/cmd/agent/metric"
-	"os/signal"
-	"time"
-	"sync"
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"sync"
 	"syscall"
-	"context"
+	"time"
+
+	"github.com/UserNaMEeman/yandex-practic-devops/cmd/agent/metric"
 )
 
-const(
-	pollInterval int = 2
+const (
+	pollInterval   int = 2
 	reportInterval int = 10
 )
 
 func collectMetrics(met *metric.Metrics) {
-	met.SetGuage()
+	met.SetMetrics()
 }
 
 func main() {
@@ -36,17 +37,21 @@ func main() {
 		<-ctx.Done()
 	}()
 
-	go func(){for{
-		mutex.Lock()
-		collectMetrics(met)
-		mutex.Unlock()
-		time.Sleep(2 * time.Second)
-	}}()
+	go func() {
+		for {
+			mutex.Lock()
+			collectMetrics(met)
+			mutex.Unlock()
+			time.Sleep(2 * time.Second)
+		}
+	}()
 
-	go func(){for{
-		mutex.Lock()
-		met.MetricPOST("http://localhost:8080/update/")
-		mutex.Unlock()
-		time.Sleep(10 * time.Second)
-	}}()
+	go func() {
+		for {
+			mutex.Lock()
+			met.MetricPOST("http://localhost:8080/update/")
+			mutex.Unlock()
+			time.Sleep(10 * time.Second)
+		}
+	}()
 }
