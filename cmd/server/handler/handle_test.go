@@ -40,6 +40,7 @@ func TestHandleMetric(t *testing.T) {
 			result := w.Result()
 			assert.Equal(t, result.StatusCode, tt.want.statusCode)
 			assert.Equal(t, result.Header.Get("Content-Type"), tt.want.contentType)
+			result.Body.Close()
 		})
 	}
 }
