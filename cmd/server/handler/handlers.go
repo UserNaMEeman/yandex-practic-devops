@@ -36,11 +36,30 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 		http.Error(w, "Invalid URL", 404)
 		return false
 	}
-	if strings.Split(path, "/")[1] != "update" && (strings.Split(path, "/")[2] != "guage" || strings.Split(path, "/")[2] != "counter") {
-		http.Error(w, "Invalid URL", 404)
+	if strings.Split(path, "/")[1] != "update" {
+		http.Error(w, "Invalid URL", 501)
 		fmt.Println("Invalid URL")
 		return false
 	}
+	if strings.Split(path, "/")[2] != "guage" {
+		if strings.Split(path, "/")[2] != "counter" {
+			http.Error(w, "Invalid URL", 501)
+			fmt.Println("Invalid URL")
+			return false
+		}
+	}
+
+	_, err = strconv.Atoi(strings.Split(path, "/")[4])
+	if err != nil {
+		http.Error(w, "Invalid value", 400)
+		return false
+	}
+	_, err = strconv.ParseFloat(strings.Split(path, "/")[4], 64)
+	if err != nil {
+		http.Error(w, "Invalid value", 400)
+		return false
+	}
+
 	return true
 }
 
