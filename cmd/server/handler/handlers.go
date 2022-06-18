@@ -24,7 +24,7 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 		http.Error(w, "Only POST requests are allowed", http.StatusMethodNotAllowed)
 		return false
 	}
-	if r.Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+	if r.Header.Get("Content-Type") != "text/plain" || r.Header.Get("Content-Type") != "text/plain" {
 		// fmt.Println("Content-Type error")
 		http.Error(w, "Content-Type must be text/plain; charset=utf-8", 500)
 		return false
