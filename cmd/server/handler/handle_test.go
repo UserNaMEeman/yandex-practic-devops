@@ -22,7 +22,7 @@ func TestHandleMetric(t *testing.T) {
 		{
 			name: "Normal request",
 			// request: "/update/guage/Alloc/3443",
-			request: "/update/gauge/testGauge/100",
+			request: "/update/counter/testCounter/100",
 			want: want{
 				statusCode:  200,
 				response:    "OK",

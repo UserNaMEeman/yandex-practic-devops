@@ -26,7 +26,7 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 	}
 	if r.Header.Get("Content-Type") != "text/plain" {
 		// fmt.Println("Content-Type error")
-		http.Error(w, "Content-Type must be text/plain", 500)
+		http.Error(w, "Content-Type must be text/plain; charset=utf-8", 500)
 		return false
 	}
 	if len(strings.Split(path, "/")) != 5 {
