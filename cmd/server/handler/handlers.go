@@ -41,10 +41,10 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 		fmt.Println("Invalid URL")
 		return false
 	}
-	if strings.Split(path, "/")[2] != "guage" {
+	if strings.Split(path, "/")[2] != "gauge" {
 		if strings.Split(path, "/")[2] != "counter" {
 			http.Error(w, "Invalid URL", 501)
-			fmt.Println("Invalid URL")
+			fmt.Println(strings.Split(path, "/")[2])
 			return false
 		}
 	}
