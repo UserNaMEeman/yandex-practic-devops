@@ -1,40 +1,45 @@
 package handler
 
-// import (
-// 	"net/http"
-// 	"testing"
-// )
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
-// func TestHandleGuage(t *testing.T) {
-// 	type want struct {
-// 		response    string
-// 		contentType string
-// 	}
-// 	tests := []struct {
-// 		name string
-// 		want want
-// 	}{
-// 		{
-// 			name: "Normal request",
-// 			want: want{
-// 				response:    nil,
-// 				contentType: "text/plain",
-// 			},
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			request := httptest.Newrequest(http.MethodPost, "/update/guage/Alloc/12334", nil)
-// 			w := httptest.NewRecorder()
-// 			h := http.HandlerFunc(handlers.StatusHandler)
-// 			h.ServeHTTP(w, request)
-// 			res := w.Result()
-// 			// if res.StatusCode != tt.want.code{
-// 			// 	t.Errorf("Expected status code %v, got %v", tt.want.code, w.Code)
-// 			// }
-// 			if res.Header.Get("Content-Type") != tt.want.contentType {
-// 				t.Errorf("Expected Content-Type %s, got %s", tt.want.contentType, res.Header.Get("Content-Type"))
-// 			}
-// 		})
-// 	}
-// }
+	"github.com/magiconair/properties/assert"
+)
+
+func TestHandleMetric(t *testing.T) {
+	type want struct {
+		statusCode  int
+		response    string
+		contentType string
+	}
+	tests := []struct {
+		name    string
+		request string
+		want    want
+	}{
+		{
+			name: "Normal request",
+			// request: "/update/guage/Alloc/3443",
+			request: "/update/gauge/testGauge/100",
+			want: want{
+				statusCode:  200,
+				response:    "OK",
+				contentType: "text/plain; charset=utf-8",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			request := httptest.NewRequest(http.MethodPost, tt.request, nil)
+			request.Header.Set("Content-Type", "text/plain")
+			w := httptest.NewRecorder()
+			h := http.HandlerFunc(HandleMetric)
+			h.ServeHTTP(w, request)
+			result := w.Result()
+			assert.Equal(t, result.StatusCode, tt.want.statusCode)
+			assert.Equal(t, result.Header.Get("Content-Type"), tt.want.contentType)
+		})
+	}
+}

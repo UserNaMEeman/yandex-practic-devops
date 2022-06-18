@@ -34,7 +34,7 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 		http.Error(w, "Invalid URL", 404)
 		return false
 	}
-	if strings.Split(path, "/")[1] != "update" || strings.Split(path, "/")[2] != "guage" && strings.Split(path, "/")[2] != "counter" {
+	if strings.Split(path, "/")[1] != "update" && (strings.Split(path, "/")[2] != "guage" || strings.Split(path, "/")[2] != "counter") {
 		http.Error(w, "Invalid URL", 404)
 		fmt.Println("Invalid URL")
 		return false
@@ -42,7 +42,7 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-func GetMetric(w http.ResponseWriter, r *http.Request) {
+func HandleMetric(w http.ResponseWriter, r *http.Request) {
 	// metrics := storage.RecieveMetrics
 	var recMetric storage.DataStore
 	state := checkRequest(w, r)
