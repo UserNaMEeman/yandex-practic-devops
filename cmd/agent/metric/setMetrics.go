@@ -14,7 +14,7 @@ func (sm *Metrics) SetMetrics() {
 	runtime.ReadMemStats(rtm)
 	RandomValue := Metric{
 		Name:   "RandomValue",
-		Type:   "guage",
+		Type:   "gauge",
 		ValueF: rand.Float64(),
 	}
 	sm.addMetrics(RandomValue)
@@ -24,7 +24,7 @@ func (sm *Metrics) SetMetrics() {
 		value, _ := strconv.ParseFloat(a, 64)
 		m := Metric{
 			Name:   val.Type().Field(i).Name,
-			Type:   "guage",
+			Type:   "gauge",
 			ValueF: value,
 		}
 		sm.addMetrics(m)
@@ -46,13 +46,16 @@ func (sm *Metrics) MetricPOST(url string) error {
 	var postURL string
 	client := http.Client{}
 	for _, i := range sm.M {
-		if i.Type == "guage" {
-			aVal := fmt.Sprint(i.ValueF)
+		if i.Type == "gauge" {
+			aVal := fmt.Sprintf("%f", i.ValueF)
 			postURL = url + i.Type + "/" + i.Name + "/" + aVal
+			// fmt.Printf("%v:%f:%s\n", aVal, i.ValueF, i.Name)
 		} else {
-			aVal := fmt.Sprint(i.ValueC)
+			aVal := fmt.Sprintf("%d", i.ValueC)
 			postURL = url + i.Type + "/" + i.Name + "/" + aVal
+			// fmt.Printf("%v:%d:%s\n", aVal, i.ValueC, i.Name)
 		}
+
 		request, err := http.NewRequest(http.MethodPost, postURL, nil)
 		if err != nil {
 			fmt.Println(err)
