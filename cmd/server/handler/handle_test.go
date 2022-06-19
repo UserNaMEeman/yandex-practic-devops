@@ -27,42 +27,42 @@ func TestHandleMetric(t *testing.T) {
 				response:    "OK",
 				contentType: "text/plain; charset=utf-8",
 			},
-		},
-		{
-			name:    "200_1",
-			request: "/update/counter/qwerty/100",
-			want: want{
-				statusCode:  200,
-				response:    "OK",
-				contentType: "text/plain; charset=utf-8",
-			},
-		},
-		{
-			name:    "400",
-			request: "/update/test/testCounter/100",
-			want: want{
-				statusCode:  400,
-				response:    "OK",
-				contentType: "text/plain; charset=utf-8",
-			},
-		},
-		{
-			name:    "500",
-			request: "/update/counter/testCounter/none",
-			want: want{
-				statusCode:  500,
-				response:    "OK",
-				contentType: "text/plain; charset=utf-8",
-			},
-		},
-		{
-			name:    "501",
-			request: "/update/counter/testCounter/ 100",
-			want: want{
-				statusCode:  501,
-				response:    "OK",
-				contentType: "text/plain; charset=utf-8",
-			},
+			// },
+			// {
+			// 	name:    "200_1",
+			// 	request: "/update/counter/qwerty/100",
+			// 	want: want{
+			// 		statusCode:  200,
+			// 		response:    "OK",
+			// 		contentType: "text/plain; charset=utf-8",
+			// 	},
+			// },
+			// {
+			// 	name:    "400",
+			// 	request: "/update/test/testCounter/100",
+			// 	want: want{
+			// 		statusCode:  400,
+			// 		response:    "OK",
+			// 		contentType: "text/plain; charset=utf-8",
+			// 	},
+			// },
+			// {
+			// 	name:    "500",
+			// 	request: "/update/counter/testCounter/none",
+			// 	want: want{
+			// 		statusCode:  500,
+			// 		response:    "OK",
+			// 		contentType: "text/plain; charset=utf-8",
+			// 	},
+			// },
+			// {
+			// 	name:    "501",
+			// 	request: "/update/counter/testCounter/ 100",
+			// 	want: want{
+			// 		statusCode:  501,
+			// 		response:    "OK",
+			// 		contentType: "text/plain; charset=utf-8",
+			// 	},
 		},
 	}
 	for _, tt := range tests {
