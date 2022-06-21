@@ -102,7 +102,6 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) {
 		recMetric.ValueC = int64(value)
 	}
 	http.Error(w, "valid data", http.StatusOK)
-	// recMetric.SaveData()
-	// w.WriteHeader(http.StatusOK)
-	fmt.Printf("%v\n", recMetric)
+	recMetric.SaveData()
+	// fmt.Printf("%v\n", recMetric)
 }
