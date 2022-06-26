@@ -74,7 +74,7 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) {
 	var recMetric storage.DataStore
 	state := checkRequest(w, r)
 	if !state {
-		fmt.Println(state)
+		// fmt.Println(state)
 		return
 	}
 	// fmt.Println("ok")
@@ -104,4 +104,19 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "valid data", http.StatusOK)
 	recMetric.SaveData()
 	// fmt.Printf("%v\n", recMetric)
+}
+
+func ShowAllMetrics(w http.ResponseWriter, r *http.Request) {
+	storage.SelectAllMetrics(w)
+}
+
+func ShowMetrics(w http.ResponseWriter, r *http.Request) {
+	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
+	if err != nil {
+		panic(err)
+	}
+	path := p.Path
+	elemData := strings.Split(path, "/")
+	valName := fmt.Sprintf("%s", elemData[3])
+	storage.SelectMetric(w, valName)
 }
