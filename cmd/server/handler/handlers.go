@@ -130,6 +130,9 @@ func ShowOneMetric(w http.ResponseWriter, r *http.Request, pullMetrics map[strin
 	elemData := strings.Split(path, "/")
 	valType := elemData[2]
 	valName := elemData[3]
+	if pullMetrics[valName].Name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 	if valType == "gauge" {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%f\n", pullMetrics[valName].ValueF)
