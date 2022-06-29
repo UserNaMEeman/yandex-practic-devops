@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -15,8 +16,8 @@ type DataStore struct {
 	ValueC int64
 }
 
-func (data *DataStore) SaveData() {
-	db, err := sql.Open("mysql", "root:root@/Metrics")
+func (data *DataStore) SaveData1() {
+	db, err := sql.Open("mysql", "root:rroot@/Metrics")
 	if err != nil {
 		panic(err)
 	}
@@ -61,9 +62,15 @@ func (data *DataStore) SaveData() {
 	}
 }
 
+func (data DataStore) SaveData(sd map[string]DataStore) {
+	// if sd[data.Name] == ""{
+	sd[data.Name] = data // need check point
+	// }
+}
+
 func SelectAllMetrics(w http.ResponseWriter) {
 	val := DataStore{}
-	db, err := sql.Open("mysql", "root:root@/Metrics")
+	db, err := sql.Open("mysql", "root:rroot@/Metrics")
 	if err != nil {
 		panic(err)
 	}
@@ -90,7 +97,7 @@ func SelectAllMetrics(w http.ResponseWriter) {
 
 func SelectMetric(w http.ResponseWriter, name string) {
 	val := DataStore{}
-	db, err := sql.Open("mysql", "root:root@/Metrics")
+	db, err := sql.Open("mysql", "root:rroot@/Metrics")
 	if err != nil {
 		panic(err)
 	}
@@ -99,7 +106,8 @@ func SelectMetric(w http.ResponseWriter, name string) {
 	rows, errdb := db.Query("select * from metrics where name = ?", name)
 	// rows, errdb := db.Query("select * from Metrics.gauge where name = ?", "Alloc")
 	if errdb != nil {
-		panic(errdb)
+		http.Error(w, "Not found", 404)
+		log.Fatal(errdb)
 	}
 	defer rows.Close()
 	if rows.Next() {
@@ -112,5 +120,7 @@ func SelectMetric(w http.ResponseWriter, name string) {
 		} else {
 			fmt.Fprintf(w, "%d\n", val.ValueC)
 		}
+	} else {
+		http.Error(w, "Not found", 404)
 	}
 }

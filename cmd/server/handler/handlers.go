@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -69,13 +70,12 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-func HandleMetric(w http.ResponseWriter, r *http.Request) {
-	// metrics := storage.RecieveMetrics
+func HandleMetric(w http.ResponseWriter, r *http.Request) (storage.DataStore, error) {
 	var recMetric storage.DataStore
 	state := checkRequest(w, r)
 	if !state {
 		// fmt.Println(state)
-		return
+		return recMetric, errors.New("bad URL")
 	}
 	// fmt.Println("ok")
 	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
@@ -101,22 +101,56 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) {
 		recMetric.Type = "counter"
 		recMetric.ValueC = int64(value)
 	}
-	http.Error(w, "valid data", http.StatusOK)
-	recMetric.SaveData()
+	w.WriteHeader(http.StatusOK)
+	return recMetric, nil
+	// recMetric.SaveData()
 	// fmt.Printf("%v\n", recMetric)
 }
 
-func ShowAllMetrics(w http.ResponseWriter, r *http.Request) {
-	storage.SelectAllMetrics(w)
+func ShowAllMetrics(w http.ResponseWriter, pullMetrics map[string]storage.DataStore) {
+	w.WriteHeader(http.StatusOK)
+	for _, i := range pullMetrics {
+		// w.WriteHeader(http.StatusAccepted)
+		if i.Type == "gauge" {
+			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %f\n", i.Name, i.Type, i.ValueF)
+		} else {
+			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %d\n", i.Name, i.Type, i.ValueC)
+		}
+	}
 }
 
-func ShowMetrics(w http.ResponseWriter, r *http.Request) {
+func ShowOneMetric(w http.ResponseWriter, r *http.Request, pullMetrics map[string]storage.DataStore) {
+	// w.WriteHeader(http.StatusForbidden)
 	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
 	}
 	path := p.Path
 	elemData := strings.Split(path, "/")
-	valName := fmt.Sprintf("%s", elemData[3])
-	storage.SelectMetric(w, valName)
+	valType := elemData[2]
+	valName := elemData[3]
+	if valType == "gauge" {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%f\n", pullMetrics[valName].ValueF)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%d\n", pullMetrics[valName].ValueC)
+	}
+	// http.Error(w, "valid data", http.StatusOK)
 }
+
+// func ShowAllMetrics(w http.ResponseWriter, r *http.Request) {
+// 	storage.SelectAllMetrics(w)
+// }
+
+// func ShowMetrics(w http.ResponseWriter, r *http.Request) {
+// 	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	path := p.Path
+// 	elemData := strings.Split(path, "/")
+// 	valName := fmt.Sprintf("%s", elemData[3])
+// 	storage.SelectMetric(w, valName)
+// }
