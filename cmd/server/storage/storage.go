@@ -1,11 +1,6 @@
 package storage
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
-	"net/http"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -68,59 +63,59 @@ func (data DataStore) SaveData(sd map[string]DataStore) {
 	// }
 }
 
-func SelectAllMetrics(w http.ResponseWriter) {
-	val := DataStore{}
-	db, err := sql.Open("mysql", "root:rroot@/Metrics")
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Printf("%T\n", db)
-	defer db.Close()
-	rows, errdb := db.Query("select * from metrics")
-	// rows, errdb := db.Query("select * from Metrics.gauge where name = ?", "Alloc")
-	if errdb != nil {
-		panic(errdb)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&val.Name, &val.Type, &val.ValueF, &val.ValueC)
-		if err != nil {
-			fmt.Println("Error: ", err)
-		}
-		if val.Type == "gauge" {
-			fmt.Fprintf(w, "Name: %s, type: %s, value: %f\n", val.Name, val.Type, val.ValueF)
-		} else {
-			fmt.Fprintf(w, "Name: %s, type: %s, value: %d\n", val.Name, val.Type, val.ValueC)
-		}
-	}
-}
+// func SelectAllMetrics(w http.ResponseWriter) {
+// 	val := DataStore{}
+// 	db, err := sql.Open("mysql", "root:rroot@/Metrics")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	// fmt.Printf("%T\n", db)
+// 	defer db.Close()
+// 	rows, errdb := db.Query("select * from metrics")
+// 	// rows, errdb := db.Query("select * from Metrics.gauge where name = ?", "Alloc")
+// 	if errdb != nil {
+// 		panic(errdb)
+// 	}
+// 	defer rows.Close()
+// 	for rows.Next() {
+// 		err := rows.Scan(&val.Name, &val.Type, &val.ValueF, &val.ValueC)
+// 		if err != nil {
+// 			fmt.Println("Error: ", err)
+// 		}
+// 		if val.Type == "gauge" {
+// 			fmt.Fprintf(w, "Name: %s, type: %s, value: %f\n", val.Name, val.Type, val.ValueF)
+// 		} else {
+// 			fmt.Fprintf(w, "Name: %s, type: %s, value: %d\n", val.Name, val.Type, val.ValueC)
+// 		}
+// 	}
+// }
 
-func SelectMetric(w http.ResponseWriter, name string) {
-	val := DataStore{}
-	db, err := sql.Open("mysql", "root:rroot@/Metrics")
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Printf("%T\n", db)
-	defer db.Close()
-	rows, errdb := db.Query("select * from metrics where name = ?", name)
-	// rows, errdb := db.Query("select * from Metrics.gauge where name = ?", "Alloc")
-	if errdb != nil {
-		http.Error(w, "Not found", 404)
-		log.Fatal(errdb)
-	}
-	defer rows.Close()
-	if rows.Next() {
-		err := rows.Scan(&val.Name, &val.Type, &val.ValueF, &val.ValueC)
-		if err != nil {
-			fmt.Println("Error: ", err)
-		}
-		if val.Type == "gauge" {
-			fmt.Fprintf(w, "%f\n", val.ValueF)
-		} else {
-			fmt.Fprintf(w, "%d\n", val.ValueC)
-		}
-	} else {
-		http.Error(w, "Not found", 404)
-	}
-}
+// func SelectMetric(w http.ResponseWriter, name string) {
+// 	val := DataStore{}
+// 	db, err := sql.Open("mysql", "root:rroot@/Metrics")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	// fmt.Printf("%T\n", db)
+// 	defer db.Close()
+// 	rows, errdb := db.Query("select * from metrics where name = ?", name)
+// 	// rows, errdb := db.Query("select * from Metrics.gauge where name = ?", "Alloc")
+// 	if errdb != nil {
+// 		http.Error(w, "Not found", 404)
+// 		log.Fatal(errdb)
+// 	}
+// 	defer rows.Close()
+// 	if rows.Next() {
+// 		err := rows.Scan(&val.Name, &val.Type, &val.ValueF, &val.ValueC)
+// 		if err != nil {
+// 			fmt.Println("Error: ", err)
+// 		}
+// 		if val.Type == "gauge" {
+// 			fmt.Fprintf(w, "%f\n", val.ValueF)
+// 		} else {
+// 			fmt.Fprintf(w, "%d\n", val.ValueC)
+// 		}
+// 	} else {
+// 		http.Error(w, "Not found", 404)
+// 	}
+// }
