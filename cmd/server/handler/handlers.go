@@ -90,6 +90,7 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) (storage.DataStore, er
 			log.Printf("%s", err)
 		}
 		recMetric.Name = elemData[3]
+		fmt.Println(recMetric.Name, ":", value)
 		recMetric.Type = "gauge"
 		recMetric.ValueF = value
 	} else {
@@ -112,9 +113,9 @@ func ShowAllMetrics(w http.ResponseWriter, pullMetrics map[string]storage.DataSt
 	for _, i := range pullMetrics {
 		// w.WriteHeader(http.StatusAccepted)
 		if i.Type == "gauge" {
-			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %f\n", i.Name, i.Type, i.ValueF)
+			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %v\n", i.Name, i.Type, i.ValueF)
 		} else {
-			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %d\n", i.Name, i.Type, i.ValueC)
+			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %v\n", i.Name, i.Type, i.ValueC)
 		}
 	}
 }
@@ -135,10 +136,10 @@ func ShowOneMetric(w http.ResponseWriter, r *http.Request, pullMetrics map[strin
 	}
 	if valType == "gauge" {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "%f\n", pullMetrics[valName].ValueF)
+		fmt.Fprintf(w, "%v\n", pullMetrics[valName].ValueF)
 	} else {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "%d\n", pullMetrics[valName].ValueC)
+		fmt.Fprintf(w, "%v\n", pullMetrics[valName].ValueC)
 	}
 	// http.Error(w, "valid data", http.StatusOK)
 }

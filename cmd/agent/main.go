@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	pollInterval   int = 2
-	reportInterval int = 10
+	pollInterval   time.Duration = 2 * time.Second
+	reportInterval time.Duration = 10 * time.Second
 )
 
 func collectMetrics(met *metric.Metrics) {
@@ -42,7 +42,7 @@ func main() {
 			mutex.Lock()
 			collectMetrics(met)
 			mutex.Unlock()
-			time.Sleep(2 * time.Second)
+			time.Sleep(pollInterval)
 		}
 	}()
 
@@ -51,7 +51,7 @@ func main() {
 			mutex.Lock()
 			met.MetricPOST("http://localhost:8080/update/")
 			mutex.Unlock()
-			time.Sleep(10 * time.Second)
+			time.Sleep(reportInterval)
 		}
 	}()
 }
