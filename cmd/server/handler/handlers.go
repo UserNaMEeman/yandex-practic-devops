@@ -90,7 +90,7 @@ func HandleMetric(w http.ResponseWriter, r *http.Request, allMetrics map[string]
 			log.Printf("%s", err)
 		}
 		recMetric.Name = elemData[3]
-		fmt.Println(recMetric.Name, ":", value)
+		// fmt.Println(recMetric.Name, ":", value)
 		recMetric.Type = "gauge"
 		recMetric.ValueF = value
 	} else {
@@ -108,7 +108,6 @@ func HandleMetric(w http.ResponseWriter, r *http.Request, allMetrics map[string]
 
 		recMetric.Type = "counter"
 	}
-	w.WriteHeader(http.StatusOK)
 	return recMetric, nil
 	// recMetric.SaveData()
 	// fmt.Printf("%v\n", recMetric)
@@ -139,6 +138,7 @@ func ShowOneMetric(w http.ResponseWriter, r *http.Request, pullMetrics map[strin
 	valName := elemData[3]
 	if pullMetrics[valName].Name == "" {
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 	if valType == "gauge" {
 		w.WriteHeader(http.StatusOK)
