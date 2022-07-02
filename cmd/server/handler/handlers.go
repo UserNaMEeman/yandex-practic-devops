@@ -70,7 +70,7 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-func HandleMetric(w http.ResponseWriter, r *http.Request) (storage.DataStore, error) {
+func HandleMetric(w http.ResponseWriter, r *http.Request, allMetrics map[string]storage.DataStore) (storage.DataStore, error) {
 	var recMetric storage.DataStore
 	state := checkRequest(w, r)
 	if !state {
@@ -99,8 +99,14 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) (storage.DataStore, er
 			log.Printf("%s", err)
 		}
 		recMetric.Name = elemData[3]
+
+		if allMetrics[recMetric.Name].Name != "" {
+			recMetric.ValueC = allMetrics[recMetric.Name].ValueC + int64(value)
+		} else {
+			recMetric.ValueC = int64(value)
+		}
+
 		recMetric.Type = "counter"
-		recMetric.ValueC = int64(value)
 	}
 	w.WriteHeader(http.StatusOK)
 	return recMetric, nil
