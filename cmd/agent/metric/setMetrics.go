@@ -55,7 +55,7 @@ func (sm *Metrics) MetricPOST(url string) error {
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(string(jsonData))
+		// fmt.Println(string(jsonData))
 		postURL = url
 		request, err := http.NewRequest(http.MethodPost, postURL, bytes.NewBuffer(jsonData))
 		if err != nil {

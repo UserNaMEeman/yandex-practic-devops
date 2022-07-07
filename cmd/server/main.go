@@ -9,8 +9,10 @@ import (
 )
 
 func main() {
-	var recMetric storage.DataStore
-	pullMetrics := make(map[string]storage.DataStore)
+	var recMetric storage.Metrics
+	// var JSONMetrics storage.Metrics
+	pullMetrics := make(map[string]storage.Metrics)
+	// pullJSONMetrics := make(map[string]storage.Metrics)
 	r := chi.NewRouter()
 	// r.Use(middleware.RequestID)
 	// r.Use(middleware.RealIP)
@@ -27,12 +29,18 @@ func main() {
 	r.Route("/update", func(r chi.Router) {
 		r.Post("/{type}/{name}/{value}", func(w http.ResponseWriter, r *http.Request) {
 			recMetric, _ = handler.HandleMetric(w, r, pullMetrics)
-			pullMetrics[recMetric.Name] = recMetric
-			// fmt.Println(pullMetrics)
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			pullMetrics[recMetric.ID] = recMetric
+		})
+		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
+			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
+			pullMetrics[recMetric.ID] = recMetric
+			// fmt.Println(JSONMetrics)
 		})
 	})
+	// r.Route("/value", func(r chi.Router) {
+	r.Post("/value", func(w http.ResponseWriter, r *http.Request) {
+		handler.ShowJSONMetrics(w, r, pullMetrics)
+	})
+	// }
 	http.ListenAndServe(":8080", r)
 }

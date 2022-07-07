@@ -11,6 +11,25 @@ type DataStore struct {
 	ValueC int64
 }
 
+type Metrics struct {
+	ID    string   `json:"id"`              // имя метрики
+	MType string   `json:"type"`            // параметр, принимающий значение gauge или counter
+	Delta *int64   `json:"delta,omitempty"` // значение метрики в случае передачи counter
+	Value *float64 `json:"value,omitempty"` // значение метрики в случае передачи gauge
+}
+
+func (data Metrics) SaveJSONData(sd map[string]Metrics) {
+	// if sd[data.Name] == ""{
+	sd[data.ID] = data // need check point
+	// }
+}
+
+func (data DataStore) SaveData(sd map[string]DataStore) {
+	// if sd[data.Name] == ""{
+	sd[data.Name] = data // need check point
+	// }
+}
+
 // func (data *DataStore) SaveData1() {
 // 	db, err := sql.Open("mysql", "root:rroot@/Metrics")
 // 	if err != nil {
@@ -56,12 +75,6 @@ type DataStore struct {
 // 		}
 // 	}
 // }
-
-func (data DataStore) SaveData(sd map[string]DataStore) {
-	// if sd[data.Name] == ""{
-	sd[data.Name] = data // need check point
-	// }
-}
 
 // func SelectAllMetrics(w http.ResponseWriter) {
 // 	val := DataStore{}
