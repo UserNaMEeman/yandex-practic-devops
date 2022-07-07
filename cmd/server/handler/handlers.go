@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -69,13 +70,12 @@ func checkRequest(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-func HandleMetric(w http.ResponseWriter, r *http.Request) {
-	// metrics := storage.RecieveMetrics
+func HandleMetric(w http.ResponseWriter, r *http.Request, allMetrics map[string]storage.DataStore) (storage.DataStore, error) {
 	var recMetric storage.DataStore
 	state := checkRequest(w, r)
 	if !state {
-		fmt.Println(state)
-		return
+		// fmt.Println(state)
+		return recMetric, errors.New("bad URL")
 	}
 	// fmt.Println("ok")
 	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
@@ -90,6 +90,7 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) {
 			log.Printf("%s", err)
 		}
 		recMetric.Name = elemData[3]
+		// fmt.Println(recMetric.Name, ":", value)
 		recMetric.Type = "gauge"
 		recMetric.ValueF = value
 	} else {
@@ -98,11 +99,68 @@ func HandleMetric(w http.ResponseWriter, r *http.Request) {
 			log.Printf("%s", err)
 		}
 		recMetric.Name = elemData[3]
+
+		if allMetrics[recMetric.Name].Name != "" {
+			recMetric.ValueC = allMetrics[recMetric.Name].ValueC + int64(value)
+		} else {
+			recMetric.ValueC = int64(value)
+		}
+
 		recMetric.Type = "counter"
-		recMetric.ValueC = int64(value)
 	}
-	http.Error(w, "valid data", http.StatusOK)
+	return recMetric, nil
 	// recMetric.SaveData()
-	// w.WriteHeader(http.StatusOK)
-	fmt.Printf("%v\n", recMetric)
+	// fmt.Printf("%v\n", recMetric)
 }
+
+func ShowAllMetrics(w http.ResponseWriter, pullMetrics map[string]storage.DataStore) {
+	w.WriteHeader(http.StatusOK)
+	for _, i := range pullMetrics {
+		// w.WriteHeader(http.StatusAccepted)
+		if i.Type == "gauge" {
+			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %v\n", i.Name, i.Type, i.ValueF)
+		} else {
+			fmt.Fprintf(w, "Name: %s	Type: %s	Value: %v\n", i.Name, i.Type, i.ValueC)
+		}
+	}
+}
+
+func ShowOneMetric(w http.ResponseWriter, r *http.Request, pullMetrics map[string]storage.DataStore) {
+	// w.WriteHeader(http.StatusForbidden)
+	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
+	}
+	path := p.Path
+	elemData := strings.Split(path, "/")
+	valType := elemData[2]
+	valName := elemData[3]
+	if pullMetrics[valName].Name == "" {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if valType == "gauge" {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%v\n", pullMetrics[valName].ValueF)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%v\n", pullMetrics[valName].ValueC)
+	}
+	// http.Error(w, "valid data", http.StatusOK)
+}
+
+// func ShowAllMetrics(w http.ResponseWriter, r *http.Request) {
+// 	storage.SelectAllMetrics(w)
+// }
+
+// func ShowMetrics(w http.ResponseWriter, r *http.Request) {
+// 	p, err := url.Parse(fmt.Sprintf("%v", r.URL))
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	path := p.Path
+// 	elemData := strings.Split(path, "/")
+// 	valName := fmt.Sprintf("%s", elemData[3])
+// 	storage.SelectMetric(w, valName)
+// }
