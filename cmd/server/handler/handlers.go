@@ -162,32 +162,32 @@ func HandleJSONMetric(w http.ResponseWriter, r *http.Request, allMetrics map[str
 }
 
 func ShowJSONMetrics(w http.ResponseWriter, r *http.Request, allMetrics map[string]storage.Metrics) {
-	var reqJson storage.Metrics
-	var respJson storage.Metrics
+	var reqJSON storage.Metrics
+	var respJSON storage.Metrics
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	err = json.Unmarshal(body, &reqJson)
+	err = json.Unmarshal(body, &reqJSON)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	for _, i := range allMetrics {
-		if i.ID == reqJson.ID && i.MType == reqJson.MType {
-			respJson = i
+		if i.ID == reqJSON.ID && i.MType == reqJSON.MType {
+			respJSON = i
 			break
 		}
 	}
-	sendData, err := json.Marshal(respJson)
+	sendData, err := json.Marshal(respJSON)
 	if err != nil {
 		fmt.Println(err)
 	}
 	// fmt.Println(allMetrics)
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, string(sendData))
-	fmt.Printf("%+v\n", reqJson)
+	fmt.Fprint(w, string(sendData))
+	// fmt.Printf("%+v\n", reqJSON)
 }
 
 func ShowAllMetrics(w http.ResponseWriter, pullMetrics map[string]storage.Metrics) {
