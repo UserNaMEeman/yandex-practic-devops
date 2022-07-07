@@ -49,7 +49,7 @@ func main() {
 	go func() {
 		for {
 			mutex.Lock()
-			met.MetricPOST("http://localhost:8080/update/")
+			met.MetricPOST("http://localhost:8080/update")
 			mutex.Unlock()
 			time.Sleep(reportInterval)
 		}
