@@ -27,10 +27,10 @@ func main() {
 	})
 	// r.Get("/value/{type}/{name}", handler.ShowMetrics)
 	r.Route("/update", func(r chi.Router) {
-		// r.Post("/{type}/{name}/{value}", func(w http.ResponseWriter, r *http.Request) {
-		// 	recMetric, _ = handler.HandleMetric(w, r, pullMetrics)
-		// 	pullMetrics[recMetric.ID] = recMetric
-		// })
+		r.Post("/{type}/{name}/{value}", func(w http.ResponseWriter, r *http.Request) {
+			recMetric, _ = handler.HandleMetric(w, r, pullMetrics)
+			pullMetrics[recMetric.ID] = recMetric
+		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
