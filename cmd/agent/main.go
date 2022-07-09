@@ -41,6 +41,7 @@ func main() {
 		for {
 			mutex.Lock()
 			collectMetrics(met)
+			// fmt.Println(time.Now())
 			mutex.Unlock()
 			time.Sleep(pollInterval)
 		}
@@ -48,10 +49,11 @@ func main() {
 
 	go func() {
 		for {
+			time.Sleep(reportInterval)
 			mutex.Lock()
 			met.MetricPOST("http://localhost:8080/update/")
+			// fmt.Println("POST", time.Now())
 			mutex.Unlock()
-			time.Sleep(reportInterval)
 		}
 	}()
 }
