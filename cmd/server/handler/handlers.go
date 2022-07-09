@@ -167,6 +167,7 @@ func ShowJSONMetrics(w http.ResponseWriter, r *http.Request, allMetrics map[stri
 	if r.Header.Get("Content-Type") != "application/json" {
 		// fmt.Println(r.Header.Get("Content-Type"))
 		http.Error(w, "Content-Type must be application/json; charset=utf-8", http.StatusInternalServerError)
+		return
 	}
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
