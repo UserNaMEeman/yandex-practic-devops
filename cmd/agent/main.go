@@ -49,11 +49,12 @@ func main() {
 
 	go func() {
 		for {
-			time.Sleep(reportInterval)
+			// time.Sleep(reportInterval)
 			mutex.Lock()
 			met.MetricPOST("http://localhost:8080/update/")
 			// fmt.Println("POST", time.Now())
 			mutex.Unlock()
+			time.Sleep(reportInterval)
 		}
 	}()
 }
