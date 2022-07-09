@@ -190,8 +190,8 @@ func ShowJSONMetrics(w http.ResponseWriter, r *http.Request, allMetrics map[stri
 		fmt.Println(err)
 	}
 	// fmt.Println(allMetrics)
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, string(sendData))
 	// fmt.Printf("%+v\n", reqJSON)
 }
