@@ -38,7 +38,7 @@ func main() {
 		})
 	})
 	// r.Route("/value", func(r chi.Router) {
-	r.Post("/value", func(w http.ResponseWriter, r *http.Request) {
+	r.Post("/value/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowJSONMetrics(w, r, pullMetrics)
 	})
 	// }
