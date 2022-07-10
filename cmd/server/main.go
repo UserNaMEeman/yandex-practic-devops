@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
@@ -9,10 +10,12 @@ import (
 )
 
 func main() {
+	addrServ, state := os.LookupEnv("ADDRESS")
+	if !state {
+		addrServ = "localhost:8080"
+	}
 	var recMetric storage.Metrics
-	// var JSONMetrics storage.Metrics
 	pullMetrics := make(map[string]storage.Metrics)
-	// pullJSONMetrics := make(map[string]storage.Metrics)
 	r := chi.NewRouter()
 	// r.Use(middleware.RequestID)
 	// r.Use(middleware.RealIP)
@@ -42,5 +45,6 @@ func main() {
 		handler.ShowJSONMetrics(w, r, pullMetrics)
 	})
 	// }
-	http.ListenAndServe(":8080", r)
+	// addrServ := "localhost:8080"
+	http.ListenAndServe(addrServ, r)
 }
