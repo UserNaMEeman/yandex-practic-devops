@@ -190,18 +190,28 @@ func ShowJSONMetrics(w http.ResponseWriter, r *http.Request, allMetrics map[stri
 	for _, i := range allMetrics {
 		if i.ID == reqJSON.ID && i.MType == reqJSON.MType {
 			respJSON = i
-			break
+			sendData, err := json.Marshal(respJSON)
+			if err != nil {
+				fmt.Println(err)
+			}
+			// fmt.Println(allMetrics)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			// w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, string(sendData))
+			return
 		}
 	}
-	sendData, err := json.Marshal(respJSON)
-	if err != nil {
-		fmt.Println(err)
-	}
-	// fmt.Println(allMetrics)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNotFound)
+	// sendData, err := json.Marshal(respJSON)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// // fmt.Println(allMetrics)
 	// w.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(w, string(sendData))
+	// w.WriteHeader(http.StatusOK)
+	// // w.Header().Set("Content-Type", "application/json")
+	// fmt.Fprint(w, string(sendData))
 	// fmt.Printf("%+v\n", reqJSON)
 }
 
