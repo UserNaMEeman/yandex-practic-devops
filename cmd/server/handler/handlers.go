@@ -183,10 +183,10 @@ func ShowJSONMetrics(w http.ResponseWriter, r *http.Request, allMetrics map[stri
 		fmt.Println(err)
 	}
 
-	// if reqJSON.ID == "" || reqJSON.MType == "" {
-	// 	w.WriteHeader(http.StatusNotFound)
-	// 	return
-	// }
+	if reqJSON.ID == "" || reqJSON.MType == "" {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	for _, i := range allMetrics {
 		if i.ID == reqJSON.ID && i.MType == reqJSON.MType {
 			respJSON = i
