@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHandleMetric(t *testing.T) {
@@ -23,15 +27,15 @@ func TestHandleMetric(t *testing.T) {
 				response:    "OK",
 				contentType: "text/plain; charset=utf-8",
 			},
-			// },
-			// {
-			// 	name:    "200_1",
-			// 	request: "/update/counter/qwerty/100",
-			// 	want: want{
-			// 		statusCode:  200,
-			// 		response:    "OK",
-			// 		contentType: "text/plain; charset=utf-8",
-			// 	},
+		},
+		{
+			name:    "json",
+			request: "/value/",
+			want: want{
+				statusCode:  200,
+				response:    "OK",
+				contentType: "text/plain; charset=utf-8",
+			},
 			// },
 			// {
 			// 	name:    "400",
@@ -63,15 +67,15 @@ func TestHandleMetric(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// request := httptest.NewRequest(http.MethodPost, tt.request, nil)
-			// request.Header.Set("Content-Type", "text/plain")
-			// w := httptest.NewRecorder()
-			// // h := http.HandlerFunc(HandleMetric)
+			request := httptest.NewRequest(http.MethodPost, tt.request, nil)
+			request.Header.Set("Content-Type", "text/plain")
+			w := httptest.NewRecorder()
+			// h := http.HandlerFunc(HandleMetric)
 			// h.ServeHTTP(w, request)
-			// result := w.Result()
-			// assert.Equal(t, result.StatusCode, tt.want.statusCode)
-			// assert.Equal(t, result.Header.Get("Content-Type"), tt.want.contentType)
-			// result.Body.Close()
+			result := w.Result()
+			assert.Equal(t, result.StatusCode, tt.want.statusCode)
+			assert.Equal(t, result.Header.Get("Content-Type"), tt.want.contentType)
+			result.Body.Close()
 		})
 	}
 }
