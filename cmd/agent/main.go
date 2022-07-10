@@ -54,7 +54,7 @@ func collectMetrics(met *metric.Metrics) {
 }
 
 func main() {
-	// myConfig := defEnv()
+	myConfig := defEnv()
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	ctx := context.Background()
@@ -76,8 +76,8 @@ func main() {
 			collectMetrics(met)
 			// fmt.Println(time.Now())
 			mutex.Unlock()
-			time.Sleep(pollInterval)
-			// time.Sleep(myConfig.pollInterval)
+			// time.Sleep(pollInterval)
+			time.Sleep(myConfig.pollInterval)
 		}
 	}()
 
@@ -90,8 +90,8 @@ func main() {
 			met.MetricPOST("http://localhost:8080/update/")
 			// fmt.Println("POST", time.Now())
 			mutex.Unlock()
-			time.Sleep(reportInterval)
-			// time.Sleep(myConfig.reportInterval)
+			// time.Sleep(reportInterval)
+			time.Sleep(myConfig.reportInterval)
 		}
 	}()
 }
