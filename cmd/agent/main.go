@@ -13,10 +13,10 @@ import (
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/agent/metric"
 )
 
-const (
-	pollInterval   time.Duration = 2 * time.Second
-	reportInterval time.Duration = 10 * time.Second
-)
+// const (
+// 	pollInterval   time.Duration = 2 * time.Second
+// 	reportInterval time.Duration = 10 * time.Second
+// )
 
 type config struct {
 	addr           string
@@ -28,17 +28,17 @@ func defEnv() config {
 
 	curentConfig := config{}
 
-	pollIntervalVal := os.Getenv("POLL_INTERVAL")
-	reportIntervalVal := os.Getenv("REPORT_INTERVAL")
-	addr := os.Getenv("ADDRESS")
+	pollIntervalVal, statePoll := os.LookupEnv("POLL_INTERVAL")
+	reportIntervalVal, stateRep := os.LookupEnv("REPORT_INTERVAL")
+	addr, stateAddr := os.LookupEnv("ADDRESS")
 
-	if pollIntervalVal == "" {
+	if statePoll == false {
 		pollIntervalVal = "2"
 	}
-	if reportIntervalVal == "" {
+	if stateRep == false {
 		reportIntervalVal = "10"
 	}
-	if addr == "" {
+	if stateAddr == false {
 		addr = "127.0.0.1:8080"
 	}
 
@@ -85,9 +85,9 @@ func main() {
 		for {
 			// time.Sleep(reportInterval)
 			mutex.Lock()
-			// targAddr := "http://" + myConfig.addr + "/update/"
-			// met.MetricPOST(targAddr)
-			met.MetricPOST("http://localhost:8080/update/")
+			targAddr := "http://" + myConfig.addr + "/update/"
+			met.MetricPOST(targAddr)
+			// met.MetricPOST("http://localhost:8080/update/")
 			// fmt.Println("POST", time.Now())
 			mutex.Unlock()
 			// time.Sleep(reportInterval)
