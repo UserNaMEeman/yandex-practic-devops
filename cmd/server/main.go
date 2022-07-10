@@ -45,5 +45,5 @@ func main() {
 	})
 	// }
 	// addrServ := "localhost:8080"
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe("localhost:8080", r)
 }

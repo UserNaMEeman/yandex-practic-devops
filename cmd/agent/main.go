@@ -39,7 +39,7 @@ func defEnv() config {
 		reportIntervalVal = "10"
 	}
 	if addr == "" {
-		addr = "localhost:8080"
+		addr = "127.0.0.1:8080"
 	}
 
 	tp, _ := strconv.Atoi(pollIntervalVal)
