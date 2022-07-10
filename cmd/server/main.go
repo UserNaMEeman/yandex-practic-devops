@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
@@ -9,6 +10,10 @@ import (
 )
 
 func main() {
+	addrServ := os.Getenv("ADDRESS")
+	if addrServ == "" {
+		addrServ = "localhost:8080"
+	}
 	var recMetric storage.Metrics
 	// var JSONMetrics storage.Metrics
 	pullMetrics := make(map[string]storage.Metrics)
@@ -42,5 +47,5 @@ func main() {
 		handler.ShowJSONMetrics(w, r, pullMetrics)
 	})
 	// }
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(addrServ, r)
 }
