@@ -32,14 +32,14 @@ func defEnv() config {
 	reportIntervalVal, stateRep := os.LookupEnv("REPORT_INTERVAL")
 	addr, stateAddr := os.LookupEnv("ADDRESS")
 
-	if statePoll == false {
+	if !statePoll {
 		pollIntervalVal = "2"
 	}
-	if stateRep == false {
+	if !stateRep {
 		reportIntervalVal = "10"
 	}
 
-	if stateAddr == false {
+	if !stateAddr {
 		addr = "127.0.0.1:8080"
 	}
 

@@ -11,7 +11,7 @@ import (
 
 func main() {
 	addrServ, state := os.LookupEnv("ADDRESS")
-	if state == false {
+	if !state {
 		addrServ = "localhost:8080"
 	}
 	var recMetric storage.Metrics
