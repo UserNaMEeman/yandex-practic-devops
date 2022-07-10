@@ -38,6 +38,7 @@ func defEnv() config {
 	if stateRep == false {
 		reportIntervalVal = "10"
 	}
+
 	if stateAddr == false {
 		addr = "127.0.0.1:8080"
 	}
@@ -46,6 +47,7 @@ func defEnv() config {
 	curentConfig.pollInterval = time.Duration(tp) * time.Second
 	tr, _ := strconv.Atoi(reportIntervalVal)
 	curentConfig.reportInterval = time.Duration(tr) * time.Second
+	curentConfig.addr = addr
 	return curentConfig
 }
 
