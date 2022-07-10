@@ -13,10 +13,10 @@ import (
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/agent/metric"
 )
 
-// const (
-// 	pollInterval   time.Duration = strconv.Atoi(pollIntervalVal) * time.Second
-// 	reportInterval time.Duration = strconv.Atoi(reportIntervalVal) * time.Second
-// )
+const (
+	pollInterval   time.Duration = 2 * time.Second
+	reportInterval time.Duration = 10 * time.Second
+)
 
 type config struct {
 	addr           string
@@ -54,7 +54,7 @@ func collectMetrics(met *metric.Metrics) {
 }
 
 func main() {
-	myConfig := defEnv()
+	// myConfig := defEnv()
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	ctx := context.Background()
@@ -76,7 +76,8 @@ func main() {
 			collectMetrics(met)
 			// fmt.Println(time.Now())
 			mutex.Unlock()
-			time.Sleep(myConfig.pollInterval)
+			time.Sleep(pollInterval)
+			// time.Sleep(myConfig.pollInterval)
 		}
 	}()
 
@@ -84,11 +85,13 @@ func main() {
 		for {
 			// time.Sleep(reportInterval)
 			mutex.Lock()
-			targAddr := "http://" + myConfig.addr + "/update/"
-			met.MetricPOST(targAddr)
+			// targAddr := "http://" + myConfig.addr + "/update/"
+			// met.MetricPOST(targAddr)
+			met.MetricPOST("http://localhost:8080/update/")
 			// fmt.Println("POST", time.Now())
 			mutex.Unlock()
-			time.Sleep(myConfig.reportInterval)
+			time.Sleep(reportInterval)
+			// time.Sleep(myConfig.reportInterval)
 		}
 	}()
 }
