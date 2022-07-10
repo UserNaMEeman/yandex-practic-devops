@@ -152,10 +152,14 @@ func HandleJSONMetric(w http.ResponseWriter, r *http.Request, allMetrics map[str
 
 	if allMetrics[recJSONMetric.ID].MType == "counter" {
 		// fmt.Println(*allMetrics[recJSONMetric.ID].Delta)
-		if *allMetrics[recJSONMetric.ID].Delta != 0 {
+		if allMetrics[recJSONMetric.ID].ID != "" {
 			a := *allMetrics[recJSONMetric.ID].Delta + *recJSONMetric.Delta
 			recJSONMetric.Delta = &a
 		}
+		// if *allMetrics[recJSONMetric.ID].Delta != 0 {
+		// 	a := *allMetrics[recJSONMetric.ID].Delta + *recJSONMetric.Delta
+		// 	recJSONMetric.Delta = &a
+		// }
 	}
 	// fmt.Printf("%+v", recJSONMetric)
 	return recJSONMetric
