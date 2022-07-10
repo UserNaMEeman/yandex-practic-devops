@@ -44,6 +44,6 @@ func main() {
 		handler.ShowJSONMetrics(w, r, pullMetrics)
 	})
 	// }
-	// addrServ := "localhost:8080"
-	http.ListenAndServe("localhost:8080", r)
+	addrServ := "localhost:8080"
+	http.ListenAndServe(addrServ, r)
 }
