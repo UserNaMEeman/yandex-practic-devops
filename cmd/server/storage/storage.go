@@ -1,6 +1,10 @@
 package storage
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -28,6 +32,37 @@ func (data DataStore) SaveData(sd map[string]DataStore) {
 	// if sd[data.Name] == ""{
 	sd[data.Name] = data // need check point
 	// }
+}
+
+func StoreData(metrics map[string]Metrics, filename string) {
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0660)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	newEncoder := json.NewEncoder(file)
+	// newEncoder.Encode(metrics)
+	for _, metric := range metrics {
+		newEncoder.Encode(metric)
+	}
+}
+
+func GetDataFromFile(filename string) { //map[string]Metrics
+	dataMetrics := &[]Metrics{}
+	file, err := os.OpenFile(filename, os.O_RDONLY, 0660)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	newDecoder := json.NewDecoder(file)
+	if err := newDecoder.Decode(&dataMetrics); err != nil {
+		fmt.Println(err)
+		return
+	}
+	// for _, d := range dataMetrics{
+
+	// }
+	fmt.Println(dataMetrics)
 }
 
 // func (data *DataStore) SaveData1() {

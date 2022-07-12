@@ -3,25 +3,71 @@ package main
 import (
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
-func main() {
-	addrServ, state := os.LookupEnv("ADDRESS")
-	if !state {
-		addrServ = "localhost:8080"
+type config struct {
+	addrServ      string
+	storeInterval time.Duration
+	storeFile     string
+	restore       bool
+}
+
+func defEnv() config {
+	currentConfig := config{}
+	addr, stateAddr := os.LookupEnv("ADDRESS")
+	storeInterval, stateStoreInterval := os.LookupEnv("STORE_INTERVAL")
+	storeFile, statestoreFile := os.LookupEnv("STORE_FILE")
+	restore, staterestore := os.LookupEnv("RESTORE")
+	if !stateAddr {
+		addr = "localhost:8080"
 	}
+	if !stateStoreInterval {
+		storeInterval = "300"
+	}
+	if !statestoreFile {
+		storeFile = "/tmp/devops-metrics-db.json"
+	}
+	if !staterestore {
+		restore = "true"
+	}
+	tp, _ := strconv.Atoi(storeInterval)
+	currentConfig.storeInterval = time.Duration(tp) * time.Second
+	currentConfig.restore, _ = strconv.ParseBool(restore)
+	currentConfig.addrServ = addr
+	currentConfig.storeFile = storeFile
+	return currentConfig
+}
+func main() {
+	currentConfig := defEnv()
+
 	var recMetric storage.Metrics
 	pullMetrics := make(map[string]storage.Metrics)
 	r := chi.NewRouter()
-	// r.Use(middleware.RequestID)
-	// r.Use(middleware.RealIP)
-	// r.Use(middleware.Recoverer)
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Recoverer)
 	// r.Use(middleware.Logger)
 
+	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
+		ticker := time.NewTicker(10 * time.Second) //currentConfig.storeInterval
+		defer ticker.Stop()
+		go func() {
+			for {
+				<-ticker.C
+				storage.StoreData(pullMetrics, currentConfig.storeFile)
+			}
+		}()
+	}
+	if currentConfig.restore {
+		storage.GetDataFromFile(currentConfig.storeFile)
+	}
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowAllMetrics(w, pullMetrics)
 	})
@@ -33,10 +79,16 @@ func main() {
 		r.Post("/{type}/{name}/{value}", func(w http.ResponseWriter, r *http.Request) {
 			recMetric, _ = handler.HandleMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
+			if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
+				storage.StoreData(pullMetrics, currentConfig.storeFile)
+			}
 		})
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
+			if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
+				storage.StoreData(pullMetrics, currentConfig.storeFile)
+			}
 			// fmt.Println(JSONMetrics)
 		})
 	})
@@ -46,5 +98,5 @@ func main() {
 	})
 	// }
 	// addrServ := "localhost:8080"
-	http.ListenAndServe(addrServ, r)
+	http.ListenAndServe(currentConfig.addrServ, r)
 }
