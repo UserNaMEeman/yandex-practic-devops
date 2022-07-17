@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -10,7 +9,6 @@ import (
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 )
 
 type config struct {
@@ -27,7 +25,7 @@ func defEnv() config {
 	storeFile, statestoreFile := os.LookupEnv("STORE_FILE")
 	restore, staterestore := os.LookupEnv("RESTORE")
 	if !stateAddr {
-		addr = "localhost:8080"
+		addr = "127.0.0.1:8080"
 	}
 	if !stateStoreInterval {
 		storeInterval = "300"
@@ -51,13 +49,13 @@ func main() {
 	var recMetric storage.Metrics
 	pullMetrics := make(map[string]storage.Metrics)
 	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Recoverer)
+	// r.Use(middleware.RequestID)
+	// r.Use(middleware.RealIP)
+	// r.Use(middleware.Recoverer)
 	// r.Use(middleware.Logger)
 
 	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
-		ticker := time.NewTicker(10 * time.Second) //currentConfig.storeInterval
+		ticker := time.NewTicker(currentConfig.storeInterval) //currentConfig.storeInterval
 		defer ticker.Stop()
 		go func() {
 			for {
@@ -70,7 +68,7 @@ func main() {
 		// fmt.Println(currentConfig.storeFile)
 		// storage.GetDataFromFile(currentConfig.storeFile)
 		pullMetrics = storage.GetDataFromFile(currentConfig.storeFile)
-		fmt.Println(pullMetrics)
+		// fmt.Println(pullMetrics)
 	}
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowAllMetrics(w, pullMetrics)
