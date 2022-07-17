@@ -47,7 +47,9 @@ func StoreData(metrics map[string]Metrics, filename string) {
 	}
 }
 
-func GetDataFromFile(filename string) map[string]Metrics { //map[string]Metrics
+func GetDataFromFile(filename string) map[string]Metrics { // map[string]Metrics
+	// loadedData := make(map[string]Metrics)
+	// var loadedData map[string]Metrics
 	loadedData := make(map[string]Metrics)
 	dataMetrics := &Metrics{}
 	file, err := os.OpenFile(filename, os.O_RDONLY, 0660)
@@ -58,16 +60,12 @@ func GetDataFromFile(filename string) map[string]Metrics { //map[string]Metrics
 	}
 	newDecoder := json.NewDecoder(file)
 	for {
-		if err := newDecoder.Decode(&dataMetrics); err != nil {
+		if err = newDecoder.Decode(&dataMetrics); err != nil {
 			// fmt.Println("Err: ", err)
-			// return
-			return nil
-			// }
-			// loadedData[dataMetrics.ID] = *dataMetrics
-
+			break
 		}
+
 		loadedData[dataMetrics.ID] = *dataMetrics
-		// fmt.Println(*dataMetrics)
 	}
 	return loadedData
 }

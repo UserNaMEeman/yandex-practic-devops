@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -67,7 +68,9 @@ func main() {
 	}
 	if currentConfig.restore {
 		// fmt.Println(currentConfig.storeFile)
+		// storage.GetDataFromFile(currentConfig.storeFile)
 		pullMetrics = storage.GetDataFromFile(currentConfig.storeFile)
+		fmt.Println(pullMetrics)
 	}
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowAllMetrics(w, pullMetrics)
