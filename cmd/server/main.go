@@ -66,7 +66,8 @@ func main() {
 		}()
 	}
 	if currentConfig.restore {
-		storage.GetDataFromFile(currentConfig.storeFile)
+		// fmt.Println(currentConfig.storeFile)
+		pullMetrics = storage.GetDataFromFile(currentConfig.storeFile)
 	}
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowAllMetrics(w, pullMetrics)

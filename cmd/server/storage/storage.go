@@ -47,22 +47,29 @@ func StoreData(metrics map[string]Metrics, filename string) {
 	}
 }
 
-func GetDataFromFile(filename string) { //map[string]Metrics
-	dataMetrics := &[]Metrics{}
+func GetDataFromFile(filename string) map[string]Metrics { //map[string]Metrics
+	loadedData := make(map[string]Metrics)
+	dataMetrics := &Metrics{}
 	file, err := os.OpenFile(filename, os.O_RDONLY, 0660)
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Println("Err in file open: ", err)
+		// return
+		return nil
 	}
 	newDecoder := json.NewDecoder(file)
-	if err := newDecoder.Decode(&dataMetrics); err != nil {
-		fmt.Println(err)
-		return
-	}
-	// for _, d := range dataMetrics{
+	for {
+		if err := newDecoder.Decode(&dataMetrics); err != nil {
+			// fmt.Println("Err: ", err)
+			// return
+			return nil
+			// }
+			// loadedData[dataMetrics.ID] = *dataMetrics
 
-	// }
-	fmt.Println(dataMetrics)
+		}
+		loadedData[dataMetrics.ID] = *dataMetrics
+		// fmt.Println(*dataMetrics)
+	}
+	return loadedData
 }
 
 // func (data *DataStore) SaveData1() {
