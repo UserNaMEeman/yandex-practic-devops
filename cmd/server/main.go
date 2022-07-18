@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -41,6 +42,10 @@ func defEnv() config {
 	currentConfig.restore, _ = strconv.ParseBool(restore)
 	currentConfig.addrServ = addr
 	currentConfig.storeFile = storeFile
+	fmt.Println("duration: ", currentConfig.storeInterval)
+	fmt.Println("restore: ", currentConfig.restore)
+	fmt.Println("addr: ", currentConfig.addrServ)
+	fmt.Println("fileName: ", currentConfig.storeFile)
 	return currentConfig
 }
 
@@ -58,6 +63,12 @@ func main() {
 	// r.Use(middleware.Recoverer)
 	// r.Use(middleware.Logger)
 
+	if config.restore {
+		// fmt.Println(currentConfig.storeFile)
+		// storage.GetDataFromFile(currentConfig.storeFile)
+		pullMetrics = storage.GetDataFromFile(config.storeFile)
+		// fmt.Println(pullMetrics)
+	}
 	if config.storeFile != "" && config.storeInterval != 0*time.Second {
 		ticker := time.NewTicker(config.storeInterval) //currentConfig.storeInterval
 		defer ticker.Stop()

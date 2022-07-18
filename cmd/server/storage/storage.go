@@ -47,6 +47,29 @@ func StoreData(metrics map[string]Metrics, filename string) {
 	}
 }
 
+func GetDataFromFile(filename string) map[string]Metrics { // map[string]Metrics
+	// loadedData := make(map[string]Metrics)
+	// var loadedData map[string]Metrics
+	loadedData := make(map[string]Metrics)
+	dataMetrics := &Metrics{}
+	file, err := os.OpenFile(filename, os.O_RDONLY, 0660)
+	if err != nil {
+		fmt.Println("Err in file open: ", err)
+		// return
+		return nil
+	}
+	newDecoder := json.NewDecoder(file)
+	for {
+		if err = newDecoder.Decode(&dataMetrics); err != nil {
+			// fmt.Println("Err: ", err)
+			break
+		}
+
+		loadedData[dataMetrics.ID] = *dataMetrics
+	}
+	return loadedData
+}
+
 // func (data *DataStore) SaveData1() {
 // 	db, err := sql.Open("mysql", "root:rroot@/Metrics")
 // 	if err != nil {
