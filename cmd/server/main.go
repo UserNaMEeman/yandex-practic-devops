@@ -34,7 +34,7 @@ func defEnv() config {
 		storeFile = "/tmp/devops-metrics-db.json"
 	}
 	if !staterestore {
-		restore = "true"
+		restore = "false"
 	}
 	tp, _ := strconv.Atoi(storeInterval)
 	currentConfig.storeInterval = time.Duration(tp) * time.Second
