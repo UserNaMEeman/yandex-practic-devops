@@ -11,6 +11,13 @@ import (
 	"github.com/go-chi/chi"
 )
 
+type config struct {
+	addrServ      string
+	storeInterval time.Duration
+	storeFile     string
+	restore       bool
+}
+
 func defEnv() config {
 	currentConfig := config{}
 	addr, stateAddr := os.LookupEnv("ADDRESS")
@@ -38,10 +45,11 @@ func defEnv() config {
 }
 
 func main() {
-	addrServ, state := os.LookupEnv("ADDRESS")
-	if !state {
-		addrServ = "localhost:8080"
-	}
+	config := defEnv()
+	// addrServ, state := os.LookupEnv("ADDRESS")
+	// if !state {
+	// 	addrServ = "localhost:8080"
+	// }
 	var recMetric storage.Metrics
 	pullMetrics := make(map[string]storage.Metrics)
 	r := chi.NewRouter()
@@ -74,5 +82,5 @@ func main() {
 	})
 	// }
 	// addrServ := "localhost:8080"
-	http.ListenAndServe(addrServ, r)
+	http.ListenAndServe(config.addrServ, r)
 }
