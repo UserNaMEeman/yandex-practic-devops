@@ -58,6 +58,17 @@ func main() {
 	// r.Use(middleware.Recoverer)
 	// r.Use(middleware.Logger)
 
+	if config.storeFile != "" && config.storeInterval != 0*time.Second {
+		ticker := time.NewTicker(config.storeInterval) //currentConfig.storeInterval
+		defer ticker.Stop()
+		go func() {
+			for {
+				<-ticker.C
+				storage.StoreData(pullMetrics, config.storeFile)
+			}
+		}()
+	}
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowAllMetrics(w, pullMetrics)
 	})
