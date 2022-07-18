@@ -43,6 +43,7 @@ func defEnv() config {
 	currentConfig.storeFile = storeFile
 	return currentConfig
 }
+
 func main() {
 	currentConfig := defEnv()
 
