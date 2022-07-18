@@ -3,11 +3,39 @@ package main
 import (
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
 	"github.com/go-chi/chi"
 )
+
+func defEnv() config {
+	currentConfig := config{}
+	addr, stateAddr := os.LookupEnv("ADDRESS")
+	storeInterval, stateStoreInterval := os.LookupEnv("STORE_INTERVAL")
+	storeFile, statestoreFile := os.LookupEnv("STORE_FILE")
+	restore, staterestore := os.LookupEnv("RESTORE")
+	if !stateAddr {
+		addr = "127.0.0.1:8080"
+	}
+	if !stateStoreInterval {
+		storeInterval = "300"
+	}
+	if !statestoreFile {
+		storeFile = "/tmp/devops-metrics-db.json"
+	}
+	if !staterestore {
+		restore = "true"
+	}
+	tp, _ := strconv.Atoi(storeInterval)
+	currentConfig.storeInterval = time.Duration(tp) * time.Second
+	currentConfig.restore, _ = strconv.ParseBool(restore)
+	currentConfig.addrServ = addr
+	currentConfig.storeFile = storeFile
+	return currentConfig
+}
 
 func main() {
 	addrServ, state := os.LookupEnv("ADDRESS")
