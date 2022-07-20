@@ -58,12 +58,12 @@ func main() {
 	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
 		ticker := time.NewTicker(currentConfig.storeInterval) //currentConfig.storeInterval
 		defer ticker.Stop()
-		// go func() {
-		// 	for {
-		// 		<-ticker.C
-		// 		storage.StoreData(pullMetrics, currentConfig.storeFile)
-		// 	}
-		// }()
+		go func() {
+			for {
+				<-ticker.C
+				storage.StoreData(pullMetrics, currentConfig.storeFile)
+			}
+		}()
 	}
 	if currentConfig.restore {
 		// fmt.Println(currentConfig.storeFile)
@@ -92,10 +92,10 @@ func main() {
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
-			// if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
-			// 	// fmt.Println("store data")
-			// 	storage.StoreData(pullMetrics, currentConfig.storeFile)
-			// }
+			if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
+				// fmt.Println("store data")
+				storage.StoreData(pullMetrics, currentConfig.storeFile)
+			}
 			// fmt.Println(JSONMetrics)
 		})
 	})
