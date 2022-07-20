@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -56,10 +55,10 @@ func main() {
 	// r.Use(middleware.Recoverer)
 	// r.Use(middleware.Logger)
 
-	fmt.Println(currentConfig.addrServ)
-	fmt.Println(currentConfig.restore)
-	fmt.Println(currentConfig.storeFile)
-	fmt.Println(currentConfig.storeInterval)
+	// fmt.Println(currentConfig.addrServ)
+	// fmt.Println(currentConfig.restore)
+	// fmt.Println(currentConfig.storeFile)
+	// fmt.Println(currentConfig.storeInterval)
 
 	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
 		ticker := time.NewTicker(currentConfig.storeInterval) //currentConfig.storeInterval
@@ -99,7 +98,7 @@ func main() {
 			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
 			if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
-				// fmt.Println("store data")
+				// fmt.Println("store data")8
 				storage.StoreData(pullMetrics, currentConfig.storeFile)
 			}
 			// fmt.Println(JSONMetrics)
