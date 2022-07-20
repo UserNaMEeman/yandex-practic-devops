@@ -68,8 +68,8 @@ func main() {
 	if currentConfig.restore {
 		// fmt.Println(currentConfig.storeFile)
 		// storage.GetDataFromFile(currentConfig.storeFile)
-		tempMetrics := storage.GetDataFromFile(currentConfig.storeFile)
-		if len(tempMetrics) != 0 {
+		tempMetrics, err := storage.GetDataFromFile(currentConfig.storeFile)
+		if err == nil {
 			pullMetrics = tempMetrics
 		}
 		// fmt.Println(pullMetrics)

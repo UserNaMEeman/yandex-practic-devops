@@ -47,7 +47,7 @@ func StoreData(metrics map[string]Metrics, filename string) {
 	}
 }
 
-func GetDataFromFile(filename string) map[string]Metrics { // map[string]Metrics
+func GetDataFromFile(filename string) (map[string]Metrics, error) { // map[string]Metrics
 	// loadedData := make(map[string]Metrics)
 	// var loadedData map[string]Metrics
 	loadedData := make(map[string]Metrics)
@@ -56,7 +56,7 @@ func GetDataFromFile(filename string) map[string]Metrics { // map[string]Metrics
 	if err != nil {
 		fmt.Println("Err in file open: ", err)
 		// return
-		return nil
+		return nil, err
 	}
 	newDecoder := json.NewDecoder(file)
 	for {
@@ -67,7 +67,7 @@ func GetDataFromFile(filename string) map[string]Metrics { // map[string]Metrics
 
 		loadedData[dataMetrics.ID] = *dataMetrics
 	}
-	return loadedData
+	return loadedData, nil
 }
 
 // func (data *DataStore) SaveData1() {
