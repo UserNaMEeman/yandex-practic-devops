@@ -9,7 +9,6 @@ import (
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 )
 
 type config struct {
@@ -54,7 +53,7 @@ func main() {
 	// r.Use(middleware.RequestID)
 	// r.Use(middleware.RealIP)
 	// r.Use(middleware.Recoverer)
-	r.Use(middleware.Logger)
+	// r.Use(middleware.Logger)
 
 	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
 		ticker := time.NewTicker(currentConfig.storeInterval) //currentConfig.storeInterval
@@ -69,7 +68,10 @@ func main() {
 	if currentConfig.restore {
 		// fmt.Println(currentConfig.storeFile)
 		// storage.GetDataFromFile(currentConfig.storeFile)
-		pullMetrics = storage.GetDataFromFile(currentConfig.storeFile)
+		tempMetrics := storage.GetDataFromFile(currentConfig.storeFile)
+		if len(tempMetrics) != 0 {
+			tempMetrics = pullMetrics
+		}
 		// fmt.Println(pullMetrics)
 	}
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
