@@ -70,7 +70,7 @@ func main() {
 		// storage.GetDataFromFile(currentConfig.storeFile)
 		tempMetrics := storage.GetDataFromFile(currentConfig.storeFile)
 		if len(tempMetrics) != 0 {
-			tempMetrics = pullMetrics
+			pullMetrics = tempMetrics
 		}
 		// fmt.Println(pullMetrics)
 	}
