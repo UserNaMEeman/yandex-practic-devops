@@ -9,6 +9,7 @@ import (
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/handler"
 	"github.com/UserNaMEeman/yandex-practic-devops/cmd/server/storage"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 type config struct {
@@ -53,17 +54,17 @@ func main() {
 	// r.Use(middleware.RequestID)
 	// r.Use(middleware.RealIP)
 	// r.Use(middleware.Recoverer)
-	// r.Use(middleware.Logger)
+	r.Use(middleware.Logger)
 
 	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
 		ticker := time.NewTicker(currentConfig.storeInterval) //currentConfig.storeInterval
 		defer ticker.Stop()
-		go func() {
-			for {
-				<-ticker.C
-				storage.StoreData(pullMetrics, currentConfig.storeFile)
-			}
-		}()
+		// go func() {
+		// 	for {
+		// 		<-ticker.C
+		// 		storage.StoreData(pullMetrics, currentConfig.storeFile)
+		// 	}
+		// }()
 	}
 	if currentConfig.restore {
 		// fmt.Println(currentConfig.storeFile)
@@ -89,9 +90,10 @@ func main() {
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
-			if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
-				storage.StoreData(pullMetrics, currentConfig.storeFile)
-			}
+			// if currentConfig.storeFile != "" && currentConfig.storeInterval == 0*time.Second {
+			// 	// fmt.Println("store data")
+			// 	storage.StoreData(pullMetrics, currentConfig.storeFile)
+			// }
 			// fmt.Println(JSONMetrics)
 		})
 	})
