@@ -60,6 +60,16 @@ func main() {
 	// fmt.Println(currentConfig.storeFile)
 	// fmt.Println(currentConfig.storeInterval)
 
+	if currentConfig.restore {
+		// fmt.Println(currentConfig.storeFile)
+		// storage.GetDataFromFile(currentConfig.storeFile)
+		tempMetrics, err := storage.GetDataFromFile(currentConfig.storeFile)
+		if err == nil {
+			pullMetrics = tempMetrics
+		}
+		// fmt.Println(pullMetrics)
+	}
+
 	if currentConfig.storeFile != "" && currentConfig.storeInterval != 0*time.Second {
 		ticker := time.NewTicker(currentConfig.storeInterval) //currentConfig.storeInterval
 		defer ticker.Stop()
@@ -69,15 +79,6 @@ func main() {
 				storage.StoreData(pullMetrics, currentConfig.storeFile)
 			}
 		}()
-	}
-	if currentConfig.restore {
-		// fmt.Println(currentConfig.storeFile)
-		// storage.GetDataFromFile(currentConfig.storeFile)
-		tempMetrics, err := storage.GetDataFromFile(currentConfig.storeFile)
-		if err == nil {
-			pullMetrics = tempMetrics
-		}
-		// fmt.Println(pullMetrics)
 	}
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.ShowAllMetrics(w, pullMetrics)
