@@ -203,16 +203,6 @@ func ShowJSONMetrics(w http.ResponseWriter, r *http.Request, allMetrics map[stri
 		}
 	}
 	w.WriteHeader(http.StatusNotFound)
-	// sendData, err := json.Marshal(respJSON)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// // fmt.Println(allMetrics)
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-	// // w.Header().Set("Content-Type", "application/json")
-	// fmt.Fprint(w, string(sendData))
-	// fmt.Printf("%+v\n", reqJSON)
 }
 
 func ShowAllMetrics(w http.ResponseWriter, pullMetrics map[string]storage.Metrics) {
