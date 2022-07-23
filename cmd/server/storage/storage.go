@@ -8,12 +8,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type DataStore struct {
-	Name   string
-	Type   string
-	ValueF float64
-	ValueC int64
-}
+// type DataStore struct {
+// 	Name   string
+// 	Type   string
+// 	ValueF float64
+// 	ValueC int64
+// }
 
 type Metrics struct {
 	ID    string   `json:"id"`              // имя метрики
@@ -28,11 +28,11 @@ func (data Metrics) SaveJSONData(sd map[string]Metrics) {
 	// }
 }
 
-func (data DataStore) SaveData(sd map[string]DataStore) {
-	// if sd[data.Name] == ""{
-	sd[data.Name] = data // need check point
-	// }
-}
+// func (data DataStore) SaveData(sd map[string]DataStore) {
+// 	// if sd[data.Name] == ""{
+// 	sd[data.Name] = data // need check point
+// 	// }
+// }
 
 func StoreData(metrics map[string]Metrics, filename string) {
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0660)
@@ -42,7 +42,9 @@ func StoreData(metrics map[string]Metrics, filename string) {
 	}
 	newEncoder := json.NewEncoder(file)
 	// newEncoder.Encode(metrics)
+	fmt.Println(len(metrics))
 	for _, metric := range metrics {
+		// fmt.Println(metric)
 		newEncoder.Encode(metric)
 	}
 }
