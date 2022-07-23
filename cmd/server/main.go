@@ -81,10 +81,10 @@ func main() {
 	// r.Use(middleware.Recoverer)
 	// r.Use(middleware.Logger)
 
-	fmt.Println(*currentConfig.addrServ)
-	fmt.Println(*currentConfig.restore)
-	fmt.Println(*currentConfig.storeFile)
-	fmt.Println(*currentConfig.storeInterval)
+	fmt.Println("listen on ", *currentConfig.addrServ)
+	fmt.Println("restore ", *currentConfig.restore)
+	fmt.Println("storeFile ", *currentConfig.storeFile)
+	fmt.Println("storeInterval ", *currentConfig.storeInterval)
 
 	if *currentConfig.restore {
 		// fmt.Println(currentConfig.storeFile)

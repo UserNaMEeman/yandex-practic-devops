@@ -77,9 +77,9 @@ func main() {
 		flag.Parse()
 		myConfig = flagConfig
 	}
-	fmt.Println(*myConfig.addr)
-	fmt.Println(*myConfig.pollInterval)
-	fmt.Println(*myConfig.reportInterval)
+	fmt.Println("send to ", *myConfig.addr)
+	fmt.Println("pollInterval ", *myConfig.pollInterval)
+	fmt.Println("reportInterval ", *myConfig.reportInterval)
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	ctx := context.Background()
