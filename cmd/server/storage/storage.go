@@ -52,7 +52,8 @@ func GetDataFromFile(filename string) (map[string]Metrics, error) { // map[strin
 	// var loadedData map[string]Metrics
 	loadedData := make(map[string]Metrics)
 	dataMetrics := &Metrics{}
-	file, err := os.OpenFile(filename, os.O_RDONLY, 0660)
+	f := filename + ".json"
+	file, err := os.OpenFile(f, os.O_RDONLY, 0660)
 	if err != nil {
 		fmt.Println("Err in file open: ", err)
 		// return
