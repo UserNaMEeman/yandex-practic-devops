@@ -102,6 +102,7 @@ func main() {
 		go func() {
 			for {
 				<-ticker.C
+				fmt.Println("ok ticker")
 				storage.StoreData(pullMetrics, *currentConfig.storeFile)
 			}
 		}()
@@ -114,18 +115,20 @@ func main() {
 	})
 	// r.Get("/value/{type}/{name}", handler.ShowMetrics)
 	r.Route("/update", func(r chi.Router) {
-		r.Post("/{type}/{name}/{value}", func(w http.ResponseWriter, r *http.Request) {
-			recMetric, _ = handler.HandleMetric(w, r, pullMetrics)
-			pullMetrics[recMetric.ID] = recMetric
-			if *currentConfig.storeFile != "" && *currentConfig.storeInterval == 0*time.Second {
-				storage.StoreData(pullMetrics, *currentConfig.storeFile)
-			}
-		})
+		// r.Post("/{type}/{name}/{value}", func(w http.ResponseWriter, r *http.Request) {
+		// 	recMetric, _ = handler.HandleMetric(w, r, pullMetrics)
+		// 	pullMetrics[recMetric.ID] = recMetric
+		// 	if *currentConfig.storeFile != "" && *currentConfig.storeInterval == 0*time.Second {
+		// 		fmt.Println("ok")
+		// 		storage.StoreData(pullMetrics, *currentConfig.storeFile)
+		// 	}
+		// })
 		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			recMetric = handler.HandleJSONMetric(w, r, pullMetrics)
 			pullMetrics[recMetric.ID] = recMetric
 			if *currentConfig.storeFile != "" && *currentConfig.storeInterval == 0*time.Second {
 				// fmt.Println("store data")8
+				fmt.Println("ok json")
 				storage.StoreData(pullMetrics, *currentConfig.storeFile)
 			}
 			// fmt.Println(JSONMetrics)

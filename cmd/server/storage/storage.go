@@ -42,7 +42,7 @@ func StoreData(metrics map[string]Metrics, filename string) {
 	}
 	newEncoder := json.NewEncoder(file)
 	// newEncoder.Encode(metrics)
-	fmt.Println(len(metrics))
+	// fmt.Println(len(metrics))
 	for _, metric := range metrics {
 		// fmt.Println(metric)
 		newEncoder.Encode(metric)
